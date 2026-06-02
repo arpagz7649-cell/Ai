@@ -3,28 +3,42 @@ import random
 
 app = Flask(__name__)
 
-angka_rahasia = random.randint(1, 100)
+with open("words.txt", "r", encoding="utf-8") as f:
+    DATABASE = set(
+        word.strip().lower()
+        for word in f
+        if word.strip()
+    )
+
+current_letter = random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/tebak", methods=["POST"])
-def tebak():
-    global angka_rahasia
+@app.route("/letter")
+def letter():
+    return {"letter": current_letter}
 
-    data = request.json
-    tebakan = int(data["angka"])
+@app.route("/check", methods=["POST"])
+def check():
+    global current_letter
 
-    if tebakan < angka_rahasia:
-        return jsonify({"hasil": "Terlalu kecil!"})
+    word = request.json["word"].lower()
 
-    elif tebakan > angka_rahasia:
-        return jsonify({"hasil": "Terlalu besar!"})
+    if not word.startswith(current_letter.lower()):
+        return {"valid": False, "message": "Huruf awal salah"}
 
-    else:
-        angka_rahasia = random.randint(1, 100)
-        return jsonify({"hasil": "Benar! Angka baru telah dibuat."})
+    if word not in DATABASE:
+        return {"valid": False, "message": "Kata tidak ada di database"}
+
+    current_letter = random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+    return {
+        "valid": True,
+        "message": "Benar!",
+        "nextLetter": current_letter
+    }
 
 if __name__ == "__main__":
     app.run(debug=True)
