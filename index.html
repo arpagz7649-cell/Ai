@@ -1,36 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Game Tebak Angka</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sambung Kata</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.card{
+    width:500px;
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+#huruf{
+    font-size:80px;
+    font-weight:bold;
+    color:#2196F3;
+}
+
+input{
+    width:90%;
+    padding:12px;
+    margin-top:10px;
+}
+
+button{
+    padding:12px 20px;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+#riwayat{
+    margin-top:20px;
+    text-align:left;
+}
+</style>
 </head>
 <body>
 
-    <h1>🎮 Tebak Angka 1 - 100</h1>
+<div class="card">
 
-    <input type="number" id="angka">
-    <button onclick="tebak()">Tebak</button>
+<h1>🎮 Sambung Kata</h1>
 
-    <h2 id="hasil"></h2>
+<div id="huruf">A</div>
 
-    <script>
-        async function tebak() {
-            let angka = document.getElementById("angka").value;
+<input
+id="kata"
+placeholder="Masukkan kata..."
+>
 
-            let response = await fetch("/tebak", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    angka: angka
-                })
-            });
+<button onclick="cekKata()">
+Jawab
+</button>
 
-            let data = await response.json();
+<h2 id="hasil"></h2>
 
-            document.getElementById("hasil").innerText = data.hasil;
-        }
-    </script>
+<h3>Skor: <span id="skor">0</span></h3>
+
+<div id="riwayat"></div>
+
+</div>
+
+<script>
+
+const database = [
+"spbd","ygy","ggwp","ovt","sbl","tbl",
+"cegil","cogil","tubir","mokondo","gamon",
+"sabi","takis","sans","kuy",
+"ayam","api","angin","android","air","akar",
+"awan","apel","agama","angkasa",
+"batu","bola","burung","bendera","buku",
+"cacing","cinta","coklat",
+"domba","durian",
+"elang","es",
+"film",
+"gajah",
+"harimau",
+"ikan",
+"jeruk",
+"kucing",
+"laut",
+"matahari",
+"naga",
+"orang",
+"pisang",
+"rumah",
+"sapi",
+"taman",
+"ular",
+"virus",
+"wayang",
+"zebra",
+"aksara",
+"renjana",
+"amerta",
+"nirwana",
+"saujana",
+"asmaraloka",
+"arunika",
+"swastamita",
+"baskara",
+"kirana",
+"lembayung",
+"buana",
+"genta",
+"karsa",
+"darsana",
+"wts","wtb","wtt","oot","brb",
+"fyp","istg","fr","pov",
+"gms","gaje","mager","gabut",
+"salting","pansos",
+"aparatur","indikator","birokrasi",
+"regulasi","legitimasi","efisiensi",
+"efektif","optimal","sinergi",
+"alokasi","realisasi","evaluasi",
+"instansi","verifikasi",
+"cmiiw","afaik","imo","idk",
+"icymi","smh","tbh","rn","wdym",
+"sjw","fomo","jomo","yolo",
+"goat","npc",
+"validasi","anomali","paradoks",
+"ambivalen","dikotomi","stagnan",
+"signifikan","implikasi",
+"eksplisit","implisit",
+"komprehensif","fundamental",
+"kolektif","skeptis",
+"apatis","empati"
+];
+
+let skor = 0;
+
+function hurufAcak(){
+    const huruf = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return huruf[Math.floor(Math.random()*huruf.length)];
+}
+
+let hurufSekarang = hurufAcak();
+
+document.getElementById("huruf").innerText =
+hurufSekarang;
+
+function cekKata(){
+
+    let kata =
+    document.getElementById("kata")
+    .value
+    .toLowerCase()
+    .trim();
+
+    if(kata === ""){
+        return;
+    }
+
+    if(!kata.startsWith(
+        hurufSekarang.toLowerCase()
+    )){
+        document.getElementById("hasil")
+        .innerText =
+        "❌ Huruf awal salah";
+        return;
+    }
+
+    if(!database.includes(kata)){
+        document.getElementById("hasil")
+        .innerText =
+        "❌ Kata tidak ada di database";
+        return;
+    }
+
+    skor += 10;
+
+    document.getElementById("skor")
+    .innerText = skor;
+
+    document.getElementById("hasil")
+    .innerText =
+    "✅ Benar";
+
+    document.getElementById("riwayat")
+    .innerHTML +=
+    "<div>✔ " + kata + "</div>";
+
+    hurufSekarang = hurufAcak();
+
+    document.getElementById("huruf")
+    .innerText =
+    hurufSekarang;
+
+    document.getElementById("kata")
+    .value = "";
+}
+
+</script>
 
 </body>
 </html>
