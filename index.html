@@ -206,4 +206,172 @@ function cekKata(){
 </script>
 
 </body>
-</html>
+<!-- STATUS GAME -->
+<div class="status">
+
+    <div class="box">
+        <h3>🏆 Skor</h3>
+        <h2 id="skor">0</h2>
+    </div>
+
+    <div class="box">
+        <h3>❤️ Nyawa</h3>
+        <h2 id="nyawa">❤️❤️❤️</h2>
+    </div>
+
+</div>
+
+<script>
+
+// =========================
+// DATA GAME
+// =========================
+
+let skor = 0;
+let nyawa = 3;
+
+// =========================
+// UPDATE NYAWA
+// =========================
+
+function updateNyawa(){
+
+    let tampilan = "";
+
+    for(let i = 0; i < nyawa; i++){
+        tampilan += "❤️";
+    }
+
+    for(let i = 0; i < (3 - nyawa); i++){
+        tampilan += "🖤";
+    }
+
+    document.getElementById("nyawa").innerText =
+    tampilan;
+
+}
+
+// =========================
+// GAME OVER
+// =========================
+
+function gameOver(){
+
+    alert(
+        "💀 GAME OVER\n\n" +
+        "Skor Akhir: " + skor
+    );
+
+    document.body.innerHTML = `
+    
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        flex-direction:column;
+        font-family:Arial;
+        background:#111;
+        color:white;
+    ">
+    
+        <h1>💀 GAME OVER</h1>
+        
+        <h2>Skor Akhir</h2>
+        
+        <h1>${skor}</h1>
+        
+        <button
+        onclick="location.reload()"
+        style="
+            padding:15px;
+            font-size:20px;
+            cursor:pointer;
+        ">
+        
+        Main Lagi
+        
+        </button>
+    
+    </div>
+    
+    `;
+
+}
+
+// =========================
+// KURANGI NYAWA
+// =========================
+
+function kurangNyawa(){
+
+    nyawa--;
+
+    updateNyawa();
+
+    if(nyawa <= 0){
+
+        gameOver();
+
+    }
+
+}
+
+// =========================
+// CONTOH CEK KATA
+// =========================
+
+function cekKata(){
+
+    let kata =
+    document
+    .getElementById("kata")
+    .value
+    .toLowerCase()
+    .trim();
+
+    if(kata === ""){
+
+        return;
+
+    }
+
+    // CONTOH SALAH
+
+    if(kata !== "ayam"){
+
+        document
+        .getElementById("hasil")
+        .innerText =
+        "❌ Jawaban Salah";
+
+        kurangNyawa();
+
+        return;
+
+    }
+
+    // BENAR
+
+    skor += 10;
+
+    document
+    .getElementById("skor")
+    .innerText =
+    skor;
+
+    document
+    .getElementById("hasil")
+    .innerText =
+    "✅ Jawaban Benar";
+
+}
+
+// =========================
+// MULAI GAME
+// =========================
+
+updateNyawa();
+
+            </script>
+            <html>
