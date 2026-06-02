@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Tebak Angka</title>
+</head>
+<body>
+
+    <h1>🎮 Tebak Angka 1 - 100</h1>
+
+    <input type="number" id="angka">
+    <button onclick="tebak()">Tebak</button>
+
+    <h2 id="hasil"></h2>
+
+    <script>
+        async function tebak() {
+            let angka = document.getElementById("angka").value;
+
+            let response = await fetch("/tebak", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    angka: angka
+                })
+            });
+
+            let data = await response.json();
+
+            document.getElementById("hasil").innerText = data.hasil;
+        }
+    </script>
+
+</body>
+</html>
