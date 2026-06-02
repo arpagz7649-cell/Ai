@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sambung Kata</title>
+<title>Sambung Kata Generator</title>
 
 <style>
+
 body{
+    margin:0;
     font-family:Arial,sans-serif;
     background:linear-gradient(135deg,#4facfe,#00f2fe);
     display:flex;
@@ -16,50 +18,90 @@ body{
 }
 
 .card{
-    width:500px;
+    width:550px;
     background:white;
-    border-radius:20px;
-    padding:20px;
+    border-radius:25px;
+    padding:25px;
     text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,.2);
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+h1{
+    margin-top:0;
 }
 
 #huruf{
-    font-size:80px;
+    font-size:90px;
     font-weight:bold;
     color:#2196F3;
+    margin:20px 0;
 }
 
 input{
     width:90%;
-    padding:12px;
-    margin-top:10px;
+    padding:15px;
+    font-size:18px;
+    border-radius:10px;
+    border:2px solid #ddd;
 }
 
 button{
-    padding:12px 20px;
-    margin-top:10px;
+    margin-top:15px;
+    padding:12px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    background:#2196F3;
+    color:white;
     cursor:pointer;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+#hasil{
+    min-height:35px;
+}
+
+.info{
+    display:flex;
+    justify-content:space-around;
+    margin-top:15px;
+    font-weight:bold;
 }
 
 #riwayat{
     margin-top:20px;
     text-align:left;
+    max-height:200px;
+    overflow-y:auto;
+    border-top:1px solid #ddd;
+    padding-top:10px;
 }
+
+.item{
+    padding:5px;
+    border-bottom:1px solid #eee;
+}
+
 </style>
 </head>
 <body>
 
 <div class="card">
 
-<h1>🎮 Sambung Kata</h1>
+<h1>🎮 Sambung Kata Generator</h1>
 
 <div id="huruf">A</div>
 
 <input
 id="kata"
 placeholder="Masukkan kata..."
+autocomplete="off"
 >
+
+<br>
 
 <button onclick="cekKata()">
 Jawab
@@ -67,7 +109,21 @@ Jawab
 
 <h2 id="hasil"></h2>
 
-<h3>Skor: <span id="skor">0</span></h3>
+<div class="info">
+
+<div>
+🏆 Skor
+<br>
+<span id="skor">0</span>
+</div>
+
+<div>
+📚 Database
+<br>
+<span id="jumlahKata">0</span>
+</div>
+
+</div>
 
 <div id="riwayat"></div>
 
@@ -75,87 +131,131 @@ Jawab
 
 <script>
 
-const database = [
-"spbd","ygy","ggwp","ovt","sbl","tbl",
-"cegil","cogil","tubir","mokondo","gamon",
-"sabi","takis","sans","kuy",
-"ayam","api","angin","android","air","akar",
-"awan","apel","agama","angkasa",
-"batu","bola","burung","bendera","buku",
-"cacing","cinta","coklat",
-"domba","durian",
-"elang","es",
-"film",
-"gajah",
-"harimau",
-"ikan",
-"jeruk",
-"kucing",
-"laut","pagi",
-"matahari",
-"naga",
-"orang",
-"pisang",
-"rumah",
-"sapi",
-"taman",
-"ular",
-"virus",
-"wayang",
-"zebra",
-"aksara",
-"renjana",
-"amerta",
-"nirwana",
-"saujana",
-"asmaraloka",
-"arunika",
-"swastamita",
-"baskara",
-"kirana",
-"lembayung",
-"buana",
-"genta",
-"karsa",
-"darsana",
-"wts","wtb","wtt","oot","brb",
-"fyp","istg","fr","pov",
-"gms","gaje","mager","gabut",
-"salting","pansos",
-"aparatur","indikator","birokrasi",
-"regulasi","legitimasi","efisiensi",
-"efektif","optimal","sinergi",
-"alokasi","realisasi","evaluasi",
-"instansi","verifikasi",
-"cmiiw","afaik","imo","idk",
-"icymi","smh","tbh","rn","wdym",
-"sjw","fomo","jomo","yolo",
-"goat","npc",
-"validasi","anomali","paradoks",
-"ambivalen","dikotomi","stagnan",
-"signifikan","implikasi",
-"eksplisit","implisit",
-"komprehensif","fundamental",
-"kolektif","skeptis",
-"apatis","empati"
+// =======================
+// GENERATOR KATA
+// =======================
+
+function generateWord(){
+
+    const sukuKata = [
+
+        "ka","ki","ku","ke","ko",
+        "sa","si","su","se","so",
+        "ra","ri","ru","re","ro",
+        "na","ni","nu","ne","no",
+        "ta","ti","tu","te","to",
+        "ma","mi","mu","me","mo",
+        "la","li","lu","le","lo",
+        "va","ve","vi","vo","vu",
+        "za","ze","zi","zo","zu"
+
+    ];
+
+    let hasil = "";
+
+    let panjang =
+    Math.floor(Math.random() * 4) + 2;
+
+    for(let i=0;i<panjang;i++){
+
+        hasil += sukuKata[
+            Math.floor(
+                Math.random() *
+                sukuKata.length
+            )
+        ];
+
+    }
+
+    return hasil;
+
+}
+
+// =======================
+// DATABASE OTOMATIS
+// =======================
+
+const database = [];
+
+while(database.length < 5000){
+
+    let kataBaru =
+    generateWord();
+
+    if(
+        !database.includes(
+            kataBaru
+        )
+    ){
+        database.push(
+            kataBaru
+        );
+    }
+
+}
+
+// =======================
+// INFO DATABASE
+// =======================
+
+document.getElementById(
+"jumlahKata"
+).innerText =
+database.length;
+
+// =======================
+// HURUF TERSEDIA
+// =======================
+
+const hurufTersedia =
+[
+...new Set(
+database.map(
+kata =>
+kata[0]
+.toUpperCase()
+)
+)
 ];
+
+// =======================
+// HURUF ACAK
+// =======================
+
+function hurufAcak(){
+
+    return hurufTersedia[
+        Math.floor(
+            Math.random() *
+            hurufTersedia.length
+        )
+    ];
+
+}
+
+// =======================
+// GAME
+// =======================
 
 let skor = 0;
 
-function hurufAcak(){
-    const huruf = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    return huruf[Math.floor(Math.random()*huruf.length)];
-}
+let hurufSekarang =
+hurufAcak();
 
-let hurufSekarang = hurufAcak();
-
-document.getElementById("huruf").innerText =
+document
+.getElementById("huruf")
+.innerText =
 hurufSekarang;
+
+// =======================
+// CEK KATA
+// =======================
 
 function cekKata(){
 
     let kata =
-    document.getElementById("kata")
+    document
+    .getElementById("kata")
     .value
     .toLowerCase()
     .trim();
@@ -164,46 +264,106 @@ function cekKata(){
         return;
     }
 
-    if(!kata.startsWith(
-        hurufSekarang.toLowerCase()
-    )){
-        document.getElementById("hasil")
+    if(
+        !kata.startsWith(
+            hurufSekarang
+            .toLowerCase()
+        )
+    ){
+
+        document
+        .getElementById("hasil")
         .innerText =
         "❌ Huruf awal salah";
+
         return;
+
     }
 
-    if(!database.includes(kata)){
-        document.getElementById("hasil")
+    if(
+        !database.includes(
+            kata
+        )
+    ){
+
+        document
+        .getElementById("hasil")
         .innerText =
-        "❌ Kata tidak ada di database";
+        "❌ Kata tidak ditemukan";
+
         return;
+
     }
 
-    skor += 10;
+    skor +=
+    kata.length;
 
-    document.getElementById("skor")
-    .innerText = skor;
-
-    document.getElementById("hasil")
+    document
+    .getElementById("skor")
     .innerText =
-    "✅ Benar";
+    skor;
 
-    document.getElementById("riwayat")
-    .innerHTML +=
-    "<div>✔ " + kata + "</div>";
+    document
+    .getElementById("hasil")
+    .innerText =
+    "✅ Benar (+"
+    + kata.length +
+    " poin)";
 
-    hurufSekarang = hurufAcak();
+    document
+    .getElementById("riwayat")
+    .innerHTML =
+    `
+    <div class="item">
+    ✔ ${kata}
+    </div>
+    `
+    +
+    document
+    .getElementById("riwayat")
+    .innerHTML;
 
-    document.getElementById("huruf")
+    hurufSekarang =
+    hurufAcak();
+
+    document
+    .getElementById("huruf")
     .innerText =
     hurufSekarang;
 
-    document.getElementById("kata")
-    .value = "";
+    document
+    .getElementById("kata")
+    .value =
+    "";
+
 }
+
+// =======================
+// ENTER
+// =======================
+
+document
+.getElementById("kata")
+.addEventListener(
+"keydown",
+function(e){
+
+    if(
+        e.key === "Enter"
+    ){
+        cekKata();
+    }
+
+}
+);
+
+console.log(
+"Database:",
+database.length,
+"kata"
+);
 
 </script>
 
 </body>
-<html>
+</html>
